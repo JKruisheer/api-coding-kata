@@ -6,7 +6,6 @@ import org.kata.axxes.api.requests.AuthenticationResponse;
 import org.kata.axxes.api.requests.LoginRequest;
 import org.kata.axxes.api.requests.RegistrationRequest;
 import org.kata.axxes.domain.Person;
-import org.kata.axxes.exceptions.InvalidRequestException;
 
 import java.util.Optional;
 
@@ -26,7 +25,7 @@ public class AuthenticationService {
     }
 
 
-    public AuthenticationResponse doRegister(RegistrationRequest registrationRequest) throws InvalidRequestException {
+    public AuthenticationResponse doRegister(RegistrationRequest registrationRequest) {
         Person person = new Person();
         person.setPersonName(registrationRequest.name());
         person.setAge(registrationRequest.age());

@@ -10,8 +10,6 @@ import jakarta.ws.rs.core.MediaType;
 import org.kata.axxes.api.requests.AuthenticationResponse;
 import org.kata.axxes.api.requests.LoginRequest;
 import org.kata.axxes.api.requests.RegistrationRequest;
-import org.kata.axxes.exceptions.InvalidRequestException;
-import org.kata.axxes.exceptions.RegisterValidationException;
 import org.kata.axxes.service.AuthenticationService;
 
 @Path("/authentication")
@@ -34,15 +32,14 @@ public class AuthenticationController {
     @Path("/register")
     @Transactional
     public AuthenticationResponse doRegister(RegistrationRequest registrationRequest) {
-        try {
-            validateIncomingRequest(registrationRequest);
-            return authenticationService.doRegister(registrationRequest);
-        } catch (InvalidRequestException e) {
-            throw new RegisterValidationException(e.getMessage());
-        }
+        validateIncomingRequest(registrationRequest);
+        return authenticationService.doRegister(registrationRequest);
     }
 
     private void validateIncomingRequest(RegistrationRequest registrationRequest) {
-        //todo
+        /* throw a registrationvalidationException here and
+        that will be handled by the registrationValidationExceptionMapper
+        It is a runtime exception so no need to cathc it. Might be better to make it a checked exception tho?
+        */
     }
 }
