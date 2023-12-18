@@ -6,6 +6,7 @@ import org.kata.axxes.api.requests.AuthenticationResponse;
 import org.kata.axxes.api.requests.LoginRequest;
 import org.kata.axxes.api.requests.RegistrationRequest;
 import org.kata.axxes.domain.Person;
+import org.kata.axxes.exceptions.InvalidRequestException;
 
 import java.util.Optional;
 
@@ -24,7 +25,16 @@ public class AuthenticationService {
         throw new UnauthorizedException(String.format("Password for user %s is not correct ", person.getUsername()));
     }
 
-    public AuthenticationResponse doRegister(RegistrationRequest registrationRequest) {
-        return null;
+
+    public AuthenticationResponse doRegister(RegistrationRequest registrationRequest) throws InvalidRequestException {
+        Person person = new Person();
+        person.setPersonName(registrationRequest.name());
+        person.setAge(registrationRequest.age());
+        person.setAddress(registrationRequest.address());
+        person.setPostalCode(registrationRequest.postalCode());
+        person.setUsername(registrationRequest.username());
+        person.setPassword(registrationRequest.password());
+        person.persist();
+        return new AuthenticationResponse(person.getPersonId());
     }
 }

@@ -25,6 +25,12 @@ public class Person extends PanacheEntityBase {
     @Column(name = "PERSON_AGE")
     private int age;
 
+    @Column(name = "PERSON_ADDRESS")
+    private String address;
+
+    @Column(name = "PERSON_POSTAL_CODE")
+    private String postalCode;
+
     @Column(name = "PERSON_USERNAME")
     private String username;
 
@@ -49,6 +55,22 @@ public class Person extends PanacheEntityBase {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
     public String getUsername() {

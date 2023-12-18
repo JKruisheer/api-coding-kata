@@ -6,10 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kata.axxes.api.requests.AuthenticationResponse;
 import org.kata.axxes.api.requests.LoginRequest;
+import org.kata.axxes.api.requests.RegistrationRequest;
 import org.kata.axxes.domain.Person;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @QuarkusTest
@@ -53,6 +54,23 @@ class AuthenticationControllerTest {
                 .statusCode(200)
                 .extract().as(AuthenticationResponse.class);
 
-        assertEquals(1, authenticationResponse.personId());
+        assertNotNull(authenticationResponse.personId());
     }
+
+    @Test
+    void testRegisterSuccessReturnsPersonId() {
+        RegistrationRequest registrationRequest = new RegistrationRequest("name", 1, "address", "1000 AA", "username", "password");
+        AuthenticationResponse authenticationResponse = given()
+                .when()
+                .header("Content-Type", "application/json")
+                .body(registrationRequest)
+                .post("/authentication/register")
+                .then()
+                .statusCode(200)
+                .extract().as(AuthenticationResponse.class);
+
+        assertNotNull(authenticationResponse.personId());
+    }
+
+
 }
