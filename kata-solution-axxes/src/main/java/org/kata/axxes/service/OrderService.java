@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import org.kata.axxes.api.requests.OrderRequest;
 import org.kata.axxes.domain.Person;
 import org.kata.axxes.domain.ProductOrder;
+import org.kata.axxes.domain.ProductOrderRepository;
 import org.kata.axxes.exceptions.UnknownUserException;
 
 @ApplicationScoped
@@ -12,6 +13,9 @@ public class OrderService {
 
     @Inject
     private AuthenticationService authenticationService;
+
+    @Inject
+    private ProductOrderRepository productOrderRepository;
 
     public void placeOrder(OrderRequest orderRequest) throws UnknownUserException {
         Person person = authenticationService.findPersonById(orderRequest.getPersonId());
@@ -22,6 +26,6 @@ public class OrderService {
         productOrder.setShippingAddress(orderRequest.getShippingAddress());
         productOrder.setBillingAddress(orderRequest.getBillingAddress());
         productOrder.setPerson(person);
-        productOrder.persist();
+        productOrderRepository.persist(productOrder);
     }
 }
