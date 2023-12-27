@@ -3,6 +3,8 @@ package org.kata.axxes.domain;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Entity
@@ -19,23 +21,38 @@ public class Person extends PanacheEntityBase {
     @Column(name = "PERSON_ID")
     private Long personId;
 
-    @Column(name = "PERSON_NAME")
+    @Column(name = "PERSON_NAME", nullable = false)
     private String personName;
 
-    @Column(name = "PERSON_AGE")
+    @Column(name = "PERSON_AGE", nullable = false)
     private int age;
 
-    @Column(name = "PERSON_ADDRESS")
+    @Column(name = "PERSON_ADDRESS", nullable = false)
     private String address;
 
-    @Column(name = "PERSON_POSTAL_CODE")
+    @Column(name = "PERSON_POSTAL_CODE", nullable = false)
     private String postalCode;
 
-    @Column(name = "PERSON_USERNAME")
+    @Column(name = "PERSON_USERNAME", nullable = false)
     private String username;
 
-    @Column(name = "PERSON_PASSWORD")
+    @Column(name = "PERSON_PASSWORD", nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    private List<PurchaseOrder> purchaseOrders;
+
+    @Column(name = "CREATED_BY", nullable = false)
+    private String createdBy;
+
+    @Column(name = "CREATED_ON", nullable = false)
+    private LocalDateTime createdOn;
+
+    @Column(name = "LAST_UPDATED_BY", nullable = false)
+    private String lastUpdatedBy;
+
+    @Column(name = "LAST_UPDATED_ON", nullable = false)
+    private LocalDateTime lastUpdatedOn;
 
     public Long getPersonId() {
         return personId;
@@ -89,8 +106,38 @@ public class Person extends PanacheEntityBase {
         this.password = password;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public LocalDateTime getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(LocalDateTime createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public String getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public LocalDateTime getLastUpdatedOn() {
+        return lastUpdatedOn;
+    }
+
     public static Optional<Person> findByUsername(String username) {
         return find("username", username).firstResultOptional();
     }
 
+    @Override
+    public void persist() {
+        this.lastUpdatedOn = LocalDateTime.now();
+        this.lastUpdatedBy = "Admin";
+        super.persist();
+    }
 }

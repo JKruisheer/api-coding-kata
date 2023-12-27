@@ -7,6 +7,7 @@ import org.kata.axxes.api.requests.LoginRequest;
 import org.kata.axxes.api.requests.RegistrationRequest;
 import org.kata.axxes.domain.Person;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -33,6 +34,8 @@ public class AuthenticationService {
         person.setPostalCode(registrationRequest.postalCode());
         person.setUsername(registrationRequest.username());
         person.setPassword(registrationRequest.password());
+        person.setCreatedBy("Admin");
+        person.setCreatedOn(LocalDateTime.now());
         person.persist();
         return new AuthenticationResponse(person.getPersonId());
     }

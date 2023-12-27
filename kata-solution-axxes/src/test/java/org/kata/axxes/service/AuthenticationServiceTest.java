@@ -10,7 +10,6 @@ import org.kata.axxes.api.requests.AuthenticationResponse;
 import org.kata.axxes.api.requests.LoginRequest;
 import org.kata.axxes.api.requests.RegistrationRequest;
 import org.kata.axxes.domain.Person;
-import org.kata.axxes.exceptions.InvalidRequestException;
 
 import java.util.Optional;
 
@@ -66,7 +65,7 @@ class AuthenticationServiceTest {
 
     @Test
     @Transactional
-    void doRegisterShouldPersistPerson() throws InvalidRequestException {
+    void doRegisterShouldPersistPerson() {
         RegistrationRequest registrationRequest = new RegistrationRequest("name", 1, "address", "1000 AA", "username", "password");
 
         AuthenticationResponse authenticationResponse = authenticationService.doRegister(registrationRequest);
@@ -75,8 +74,20 @@ class AuthenticationServiceTest {
     }
 
     @Test
+    @Transactional
     void doRegisterShouldMapEverythingCorrectToDatabase() {
-        //todo
+        RegistrationRequest registrationRequest = new RegistrationRequest("name", 1, "address", "1000 AA", "username", "password");
+
+        AuthenticationResponse authenticationResponse = authenticationService.doRegister(registrationRequest);
+
+        Person person = Person.findById(authenticationResponse.personId());
+        assertEquals(registrationRequest.name(), person.getPersonName());
+        assertEquals(registrationRequest.age(), person.getAge());
+        assertEquals(registrationRequest.address(), person.getAddress());
+        assertEquals(registrationRequest.postalCode(), person.getPostalCode());
+        assertEquals(registrationRequest.username(), person.getUsername());
+        assertEquals(registrationRequest.password(), person.getPassword());
+        assertEquals("Admin", person.getCreatedBy());
     }
 
     private Person createMockPerson(String password) {

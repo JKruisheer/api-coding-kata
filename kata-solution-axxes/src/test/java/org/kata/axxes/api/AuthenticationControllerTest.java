@@ -1,4 +1,4 @@
-package org.kata.axxes;
+package org.kata.axxes.api;
 
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.transaction.Transactional;
@@ -8,6 +8,8 @@ import org.kata.axxes.api.requests.AuthenticationResponse;
 import org.kata.axxes.api.requests.LoginRequest;
 import org.kata.axxes.api.requests.RegistrationRequest;
 import org.kata.axxes.domain.Person;
+
+import java.time.LocalDateTime;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,8 +28,11 @@ class AuthenticationControllerTest {
         person.setPersonName("Jesse");
         person.setUsername("Jesse");
         person.setPassword(DUMMY_PASSWORD);
+        person.setAddress("Address");
+        person.setPostalCode("1000AA");
+        person.setCreatedBy("Admin");
+        person.setCreatedOn(LocalDateTime.now());
         person.persist();
-        person.getPersonId();
     }
 
     @Test
