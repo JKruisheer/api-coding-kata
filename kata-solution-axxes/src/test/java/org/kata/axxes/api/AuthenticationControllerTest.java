@@ -1,44 +1,19 @@
 package org.kata.axxes.api;
 
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kata.axxes.IntegrationTest;
 import org.kata.axxes.api.requests.AuthenticationResponse;
 import org.kata.axxes.api.requests.LoginRequest;
 import org.kata.axxes.api.requests.RegistrationRequest;
-import org.kata.axxes.domain.Person;
-import org.kata.axxes.domain.PersonRepository;
-
-import java.time.LocalDateTime;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-
 @QuarkusTest
 @Transactional
-class AuthenticationControllerTest {
-
-    @Inject
-    private PersonRepository personRepository;
-
-    public static final String DUMMY_PASSWORD = "123456";
-
-    @BeforeEach
-    void createAPerson() {
-        Person person = new Person();
-        person.setAge(12);
-        person.setPersonName("Jesse");
-        person.setUsername("Jesse");
-        person.setPassword(DUMMY_PASSWORD);
-        person.setAddress("Address");
-        person.setPostalCode("1000AA");
-        person.setCreatedBy("Admin");
-        person.setCreatedOn(LocalDateTime.now());
-        personRepository.persist(person);
-    }
+class AuthenticationControllerTest extends IntegrationTest {
 
     @Test
     void testLoginUnknownUserThrowsUnauthorizedException() {
@@ -54,7 +29,7 @@ class AuthenticationControllerTest {
 
     @Test
     void testLoginSuccessReturnsPersonId() {
-        LoginRequest loginRequest = new LoginRequest("Jesse", DUMMY_PASSWORD);
+        LoginRequest loginRequest = new LoginRequest(getTestPerson().getUsername(), getTestPerson().getPassword());
         AuthenticationResponse authenticationResponse = given()
                 .when()
                 .header("Content-Type", "application/json")
