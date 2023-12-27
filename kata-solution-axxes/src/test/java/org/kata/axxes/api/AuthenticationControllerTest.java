@@ -1,6 +1,7 @@
 package org.kata.axxes.api;
 
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.kata.axxes.api.requests.AuthenticationResponse;
 import org.kata.axxes.api.requests.LoginRequest;
 import org.kata.axxes.api.requests.RegistrationRequest;
 import org.kata.axxes.domain.Person;
+import org.kata.axxes.domain.PersonRepository;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @QuarkusTest
 @Transactional
 class AuthenticationControllerTest {
+
+    @Inject
+    private PersonRepository personRepository;
 
     public static final String DUMMY_PASSWORD = "123456";
 
@@ -32,7 +37,7 @@ class AuthenticationControllerTest {
         person.setPostalCode("1000AA");
         person.setCreatedBy("Admin");
         person.setCreatedOn(LocalDateTime.now());
-        person.persist();
+        personRepository.persist(person);
     }
 
     @Test

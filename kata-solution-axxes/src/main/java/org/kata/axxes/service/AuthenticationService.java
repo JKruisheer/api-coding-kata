@@ -2,10 +2,13 @@ package org.kata.axxes.service;
 
 import io.quarkus.security.UnauthorizedException;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.kata.axxes.api.requests.AuthenticationResponse;
 import org.kata.axxes.api.requests.LoginRequest;
 import org.kata.axxes.api.requests.RegistrationRequest;
 import org.kata.axxes.domain.Person;
+import org.kata.axxes.domain.PersonRepository;
+import org.kata.axxes.exceptions.UnknownUserException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -13,8 +16,11 @@ import java.util.Optional;
 @ApplicationScoped
 public class AuthenticationService {
 
+    @Inject
+    private PersonRepository personRepository;
+
     public AuthenticationResponse doLogin(LoginRequest loginRequest) {
-        Optional<Person> optionalPerson = Person.findByUsername(loginRequest.username());
+        Optional<Person> optionalPerson = personRepository.findByUsername(loginRequest.username());
         if (optionalPerson.isEmpty()) {
             throw new UnauthorizedException();
         }
@@ -24,7 +30,6 @@ public class AuthenticationService {
         }
         throw new UnauthorizedException(String.format("Password for user %s is not correct ", person.getUsername()));
     }
-
 
     public AuthenticationResponse doRegister(RegistrationRequest registrationRequest) {
         Person person = new Person();
@@ -36,7 +41,11 @@ public class AuthenticationService {
         person.setPassword(registrationRequest.password());
         person.setCreatedBy("Admin");
         person.setCreatedOn(LocalDateTime.now());
-        person.persist();
+        personRepository.persist(person);
         return new AuthenticationResponse(person.getPersonId());
+    }
+
+    public Person findPersonById(Long id) throws UnknownUserException {
+        return (Person) Person.findByIdOptional(id).orElseThrow(() -> new UnknownUserException("Unknown user"));
     }
 }

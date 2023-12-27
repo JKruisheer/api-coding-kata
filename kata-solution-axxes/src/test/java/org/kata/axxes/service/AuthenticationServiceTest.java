@@ -2,6 +2,7 @@ package org.kata.axxes.service;
 
 import io.quarkus.panache.mock.PanacheMock;
 import io.quarkus.security.UnauthorizedException;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -10,12 +11,14 @@ import org.kata.axxes.api.requests.AuthenticationResponse;
 import org.kata.axxes.api.requests.LoginRequest;
 import org.kata.axxes.api.requests.RegistrationRequest;
 import org.kata.axxes.domain.Person;
+import org.kata.axxes.domain.PersonRepository;
+import org.kata.axxes.exceptions.UnknownUserException;
+import org.mockito.ArgumentCaptor;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @QuarkusTest
 class AuthenticationServiceTest {
@@ -24,13 +27,16 @@ class AuthenticationServiceTest {
     @Inject
     private AuthenticationService authenticationService;
 
+    @InjectMock
+    private PersonRepository personRepository;
+
     @Test
     void doLoginShouldThrowWhenUsernameNotFound() {
         PanacheMock.mock(Person.class);
 
         LoginRequest loginRequest = new LoginRequest(USERNAME, "ww");
 
-        when(Person.findByUsername(USERNAME)).thenReturn(Optional.empty());
+        when(personRepository.findByUsername(USERNAME)).thenReturn(Optional.empty());
 
         assertThrows(UnauthorizedException.class, () -> authenticationService.doLogin(loginRequest));
     }
@@ -43,7 +49,7 @@ class AuthenticationServiceTest {
 
         Person person = createMockPerson("www");
 
-        when(Person.findByUsername(USERNAME)).thenReturn(Optional.of(person));
+        when(personRepository.findByUsername(USERNAME)).thenReturn(Optional.of(person));
 
         assertThrows(UnauthorizedException.class, () -> authenticationService.doLogin(loginRequest));
     }
@@ -56,7 +62,7 @@ class AuthenticationServiceTest {
 
         Person person = createMockPerson("ww");
 
-        when(Person.findByUsername(USERNAME)).thenReturn(Optional.of(person));
+        when(personRepository.findByUsername(USERNAME)).thenReturn(Optional.of(person));
 
         AuthenticationResponse response = authenticationService.doLogin(loginRequest);
 
@@ -68,26 +74,41 @@ class AuthenticationServiceTest {
     void doRegisterShouldPersistPerson() {
         RegistrationRequest registrationRequest = new RegistrationRequest("name", 1, "address", "1000 AA", "username", "password");
 
-        AuthenticationResponse authenticationResponse = authenticationService.doRegister(registrationRequest);
+        authenticationService.doRegister(registrationRequest);
 
-        assertNotNull(authenticationResponse.personId());
+        ArgumentCaptor<Person> argumentCaptor = ArgumentCaptor.forClass(Person.class);
+        verify(personRepository, times(1)).persist(argumentCaptor.capture());
+
+        Person capturedPerson = argumentCaptor.getValue();
+        assertEquals(capturedPerson.getPersonName(), registrationRequest.name());
+        assertEquals(capturedPerson.getAge(), registrationRequest.age());
+        assertEquals(capturedPerson.getAddress(), registrationRequest.address());
+        assertEquals(capturedPerson.getPostalCode(), registrationRequest.postalCode());
+        assertEquals(capturedPerson.getUsername(), registrationRequest.username());
+        assertEquals(capturedPerson.getPassword(), registrationRequest.password());
     }
 
     @Test
-    @Transactional
-    void doRegisterShouldMapEverythingCorrectToDatabase() {
-        RegistrationRequest registrationRequest = new RegistrationRequest("name", 1, "address", "1000 AA", "username", "password");
+    void findPersonById() throws UnknownUserException {
+        PanacheMock.mock(Person.class);
 
-        AuthenticationResponse authenticationResponse = authenticationService.doRegister(registrationRequest);
+        Person person = createMockPerson("ww");
 
-        Person person = Person.findById(authenticationResponse.personId());
-        assertEquals(registrationRequest.name(), person.getPersonName());
-        assertEquals(registrationRequest.age(), person.getAge());
-        assertEquals(registrationRequest.address(), person.getAddress());
-        assertEquals(registrationRequest.postalCode(), person.getPostalCode());
-        assertEquals(registrationRequest.username(), person.getUsername());
-        assertEquals(registrationRequest.password(), person.getPassword());
-        assertEquals("Admin", person.getCreatedBy());
+        when(Person.findByIdOptional(person.getPersonId())).thenReturn(Optional.of(person));
+
+        Person optionalPerson = authenticationService.findPersonById(person.getPersonId());
+
+        assertNotNull(optionalPerson);
+    }
+
+    @Test
+    void findPersonByIdShouldThrowUnknownUserException() {
+        PanacheMock.mock(Person.class);
+
+        Person person = createMockPerson("ww");
+
+        assertThrows(UnknownUserException.class, () ->
+                authenticationService.findPersonById(person.getPersonId()));
     }
 
     private Person createMockPerson(String password) {

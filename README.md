@@ -30,7 +30,7 @@ This should run on localhost:8080/tooltopia/registration/login
 **Remember, the password and username need to be written exactly as they were when created. Upper and lower case letters matter.**
 
 ### Our first orders
-Now that we have a registration system, it is time to process our first orders. Please create an endpoint which runs at localhost:8080/tooltopia/order and it should accept:
+Now that we have a registration system, it is time to process our first orders. Please create an endpoint which runs at localhost:8080/tooltopia/orders/create and it should accept:
 
     {
         "product": "Hammer",
@@ -51,6 +51,9 @@ Up until now we assumed that we always had inventory for the first order. We nee
 
 We also need to add some validation to the order endpoint to check if we even have that in stock! Assume that the product field is the reference to the inventory.
 
+
+### Finishing up
+You might have noticed that this whole personID thing is not really a good idea. We can just send a random personID and that person placed an order. We want the login to return a specific token and we need to send that token as an header to the API. A lot safer right?
 
 //TODO determine if this is correct
 When your endpoint is finished, put it in a docker container and send it to the test server. Then, run the scripts and let's check if everything works!

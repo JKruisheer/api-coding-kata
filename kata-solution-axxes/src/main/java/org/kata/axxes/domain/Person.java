@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Table(name = "PERSON")
@@ -39,8 +38,8 @@ public class Person extends PanacheEntityBase {
     @Column(name = "PERSON_PASSWORD", nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
-    private List<PurchaseOrder> purchaseOrders;
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductOrder> productOrders;
 
     @Column(name = "CREATED_BY", nullable = false)
     private String createdBy;
@@ -130,8 +129,16 @@ public class Person extends PanacheEntityBase {
         return lastUpdatedOn;
     }
 
-    public static Optional<Person> findByUsername(String username) {
-        return find("username", username).firstResultOptional();
+    public void setLastUpdatedBy(String lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
+    }
+
+    public void setLastUpdatedOn(LocalDateTime lastUpdatedOn) {
+        this.lastUpdatedOn = lastUpdatedOn;
+    }
+
+    public List<ProductOrder> getProductOrders() {
+        return productOrders;
     }
 
     @Override
