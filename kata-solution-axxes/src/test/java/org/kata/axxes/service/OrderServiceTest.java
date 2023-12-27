@@ -32,9 +32,11 @@ class OrderServiceTest {
     private OrderService orderService;
 
     @Test
-    void placeOrderShouldThrowIfUnknownUser() {
+    void placeOrderShouldThrowIfUnknownUser() throws UnknownUserException {
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setPersonId(99999L);
+
+        when(authenticationService.findPersonById(orderRequest.getPersonId())).thenThrow(UnknownUserException.class);
 
         assertThrows(UnknownUserException.class, () -> orderService.placeOrder(orderRequest));
     }
