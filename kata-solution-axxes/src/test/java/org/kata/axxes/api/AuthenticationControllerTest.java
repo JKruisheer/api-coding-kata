@@ -3,7 +3,7 @@ package org.kata.axxes.api;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
-import org.kata.axxes.IntegrationTest;
+import org.kata.axxes.UserRequiredTest;
 import org.kata.axxes.api.requests.AuthenticationResponse;
 import org.kata.axxes.api.requests.LoginRequest;
 import org.kata.axxes.api.requests.RegistrationRequest;
@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
 @Transactional
-class AuthenticationControllerTest extends IntegrationTest {
+class AuthenticationControllerTest extends UserRequiredTest {
 
     @Test
     void testLoginUnknownUserThrowsUnauthorizedException() {

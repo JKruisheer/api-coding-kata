@@ -5,13 +5,16 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.kata.axxes.api.requests.OrderRequest;
-import org.kata.axxes.domain.Person;
-import org.kata.axxes.domain.ProductOrder;
-import org.kata.axxes.domain.ProductOrderRepository;
+import org.kata.axxes.domain.person.Person;
+import org.kata.axxes.domain.productorder.ProductOrder;
+import org.kata.axxes.domain.productorder.ProductOrderRepository;
+import org.kata.axxes.domain.productorder.ProductOrderSum;
 import org.kata.axxes.exceptions.UnknownUserException;
 import org.mockito.ArgumentCaptor;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -61,6 +64,18 @@ class OrderServiceTest {
         assertEquals(capturedProductOrder.getQuantity(), orderRequest.getQuantity());
         assertEquals(capturedProductOrder.getShippingAddress(), orderRequest.getShippingAddress());
         assertEquals(capturedProductOrder.getBillingAddress(), orderRequest.getBillingAddress());
+    }
+
+    @Test
+    void fetchReportShouldCallRepository() {
+        List<ProductOrderSum> poSums = new ArrayList<>();
+        ProductOrderSum sum = new ProductOrderSum(new BigDecimal(20), 1L);
+        poSums.add(sum);
+
+        when(productOrderRepository.calculateTotalSumOfProducts()).thenReturn(poSums);
+
+        List<ProductOrderSum> ordersums = orderService.fetchReport();
+        assertEquals(poSums, ordersums);
     }
 
     public OrderRequest createOrderRequest() {

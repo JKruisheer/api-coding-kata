@@ -30,7 +30,7 @@ This should run on localhost:8080/tooltopia/registration/login
 **Remember, the password and username need to be written exactly as they were when created. Upper and lower case letters matter.**
 
 ### Our first orders
-Now that we have a registration system, it is time to process our first orders. Please create an endpoint which runs at localhost:8080/tooltopia/orders/create and it should accept:
+Now that we have a registration system, it is time to process our first orders. Please create an endpoint which runs at localhost:8080/tooltopia/orders/createStpro and it should accept:
 
     {
         "product": "Hammer",
@@ -44,7 +44,7 @@ Now that we have a registration system, it is time to process our first orders. 
 personID should refer to the person that we created in the authorization API.
 
 ### Summarize
-After one month of sales, Paul now wants to know how much revenue he has made over the past months. Can you make an endpoint which gives back the revenue per month?
+After one month of sales, Paul now wants to know how much revenue he has made over the past months. Can you make an endpoint which gives back the revenue per month? Please make sure it runs on localhost:8080/tooltopia/orders/report
 
 ### Inventory
 Up until now we assumed that we always had inventory for the first order. We need an endpoint which returns the inventory that we still have of the current items. We also need an endpoint which gets the inventory size of the ID of the item we requested.

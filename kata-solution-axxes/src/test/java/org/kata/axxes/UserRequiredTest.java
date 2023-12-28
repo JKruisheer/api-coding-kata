@@ -2,12 +2,12 @@ package org.kata.axxes;
 
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
-import org.kata.axxes.domain.Person;
-import org.kata.axxes.domain.PersonRepository;
+import org.kata.axxes.domain.person.Person;
+import org.kata.axxes.domain.person.PersonRepository;
 
 import java.time.LocalDateTime;
 
-public class IntegrationTest {
+public class UserRequiredTest {
 
     public static final String DUMMY_PASSWORD = "123456";
 

@@ -3,10 +3,13 @@ package org.kata.axxes.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.kata.axxes.api.requests.OrderRequest;
-import org.kata.axxes.domain.Person;
-import org.kata.axxes.domain.ProductOrder;
-import org.kata.axxes.domain.ProductOrderRepository;
+import org.kata.axxes.domain.person.Person;
+import org.kata.axxes.domain.productorder.ProductOrder;
+import org.kata.axxes.domain.productorder.ProductOrderRepository;
+import org.kata.axxes.domain.productorder.ProductOrderSum;
 import org.kata.axxes.exceptions.UnknownUserException;
+
+import java.util.List;
 
 @ApplicationScoped
 public class OrderService {
@@ -27,5 +30,9 @@ public class OrderService {
         productOrder.setBillingAddress(orderRequest.getBillingAddress());
         productOrder.setPerson(person);
         productOrderRepository.persist(productOrder);
+    }
+
+    public List<ProductOrderSum> fetchReport() {
+        return productOrderRepository.calculateTotalSumOfProducts();
     }
 }

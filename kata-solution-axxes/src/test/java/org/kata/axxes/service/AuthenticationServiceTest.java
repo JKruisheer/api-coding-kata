@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.kata.axxes.api.requests.AuthenticationResponse;
 import org.kata.axxes.api.requests.LoginRequest;
 import org.kata.axxes.api.requests.RegistrationRequest;
-import org.kata.axxes.domain.Person;
-import org.kata.axxes.domain.PersonRepository;
+import org.kata.axxes.domain.person.Person;
+import org.kata.axxes.domain.person.PersonRepository;
 import org.kata.axxes.exceptions.UnknownUserException;
 import org.mockito.ArgumentCaptor;
 

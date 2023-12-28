@@ -1,7 +1,8 @@
-package org.kata.axxes.domain;
+package org.kata.axxes.domain.person;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
+import org.kata.axxes.domain.productorder.ProductOrder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,6 +53,10 @@ public class Person extends PanacheEntityBase {
 
     @Column(name = "LAST_UPDATED_ON", nullable = false)
     private LocalDateTime lastUpdatedOn;
+
+    public void setPersonId(Long personId) {
+        this.personId = personId;
+    }
 
     public Long getPersonId() {
         return personId;
@@ -105,28 +110,13 @@ public class Person extends PanacheEntityBase {
         this.password = password;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
-    public LocalDateTime getCreatedOn() {
-        return createdOn;
-    }
 
     public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
-    }
-
-    public String getLastUpdatedBy() {
-        return lastUpdatedBy;
-    }
-
-    public LocalDateTime getLastUpdatedOn() {
-        return lastUpdatedOn;
     }
 
     public void setLastUpdatedBy(String lastUpdatedBy) {
@@ -139,12 +129,5 @@ public class Person extends PanacheEntityBase {
 
     public List<ProductOrder> getProductOrders() {
         return productOrders;
-    }
-
-    @Override
-    public void persist() {
-        this.lastUpdatedOn = LocalDateTime.now();
-        this.lastUpdatedBy = "Admin";
-        super.persist();
     }
 }

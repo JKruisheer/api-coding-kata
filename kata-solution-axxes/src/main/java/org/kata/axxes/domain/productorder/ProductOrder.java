@@ -1,7 +1,8 @@
-package org.kata.axxes.domain;
+package org.kata.axxes.domain.productorder;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
+import org.kata.axxes.domain.person.Person;
 
 import java.math.BigDecimal;
 
